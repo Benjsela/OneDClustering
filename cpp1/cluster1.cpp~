@@ -1,0 +1,17 @@
+#include "cluster1.hpp"
+
+
+
+
+
+
+
+
+
+
+
+int f1(){
+  double ** T = new double*[10];
+
+}
+
