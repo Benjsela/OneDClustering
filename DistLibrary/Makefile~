@@ -1,0 +1,15 @@
+CFLAGS = -Wall -g
+CC = g++ -std=c++11
+
+
+
+customDistributions.o: customDistributions.hpp customDistributions.cpp
+	$(CC) $(CFLAGS) -c customDistributions.cpp
+
+
+
+
+clean:
+	rm -f *.o
+
+

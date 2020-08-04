@@ -1,6 +1,6 @@
 #include "cluster1.hpp"
 #include<vector>
-
+#include<algorithm>
 
 //some utilities for debugging--------------
 int printVec(std::vector<double> * v){
@@ -20,6 +20,57 @@ int printMatrix(double ** M, int n1, int n2){
   }
   return 0;
 }
+
+
+//cost function for minimizing sum of within cluster distances from median
+double ** CC1(int k, int n,std::vector<double> * x){
+  double ** C = new double*[n];
+  for(int i=0;i<n;i++){
+    C[i] = new double[n];
+  }
+ 
+  int s = x->size();
+  std::vector<double> * sum = new std::vector<double>();
+  std::vector<double> * sum2 = new std::vector<double>();
+  
+  
+  sum->push_back(x->at(0));
+  sum2->push_back((x->at(0))*(x->at(0)));
+  for(int i=1;i<s;i++){
+    sum->push_back(sum->at(i-1)+x->at(i));
+    sum2->push_back(sum2->at(i-1)+(x->at(i))*(x->at(i)));
+  }
+  for(int j=0;j<n;j++){
+    for(int i=0;i<=j;i++){
+      printf("(i,j) = %d,%d\n",i,j);
+      double sl;
+      double sl2;
+      if(i==0){
+	sl = sum->at(j);
+	sl2 = sum2->at(j);
+      }
+      else{
+	sl = sum->at(j)-sum->at(i-1);
+	sl2 = sum2->at(j)-sum2->at(i-1);
+      }
+      printf("sl2 = %f\n",sl2);	
+      printf("sl = %f\n",sl);
+      //mu should be median element
+      double mu = (1.0/(double(j-i+1)))*sl;
+      double Cij = (j-i+1)*mu*mu-2*mu*sl+sl2;
+      C[i][j] = Cij;
+    }
+  }
+
+  return C;
+
+}
+
+
+
+
+
+
 
 //cost function for minimizing sum of within cluster squared distances
 double ** CC(int k, int n,std::vector<double> * x){
@@ -68,19 +119,23 @@ std::vector<double> *  computeClustering(int k, double ** T, std::vector<double>
   int n = x->size();
   int num = n-1;
   std::vector<double> * p = new std::vector<double>();
+  std::vector<double> * index = new std::vector<double>();
+  p->push_back(x->at(num));
+  index->push_back(num+1);
   for(int i=0;i<k;i++){   
     double ind = T[k-i-1][num];
     printf("ind = %f\n",ind);
     num = ind-1;
     double x_ind = x->at(ind);
+    index->push_back(ind);
     p->push_back(x_ind);
   }
   printVec(p);
-  return p;
+  return index;
 }
 
 
-int cluster1Dslow(int k, std::vector<double> * x,double ** C){
+double cluster1Dslow(int k, std::vector<double> * x,double ** C){
   int n = x->size();
   //std::vector<double> * x = new std::vector<double>();
   double ** T = new double*[n];
@@ -122,15 +177,31 @@ int cluster1Dslow(int k, std::vector<double> * x,double ** C){
   printMatrix(T, n, n);
   printf("D=\n");
   printMatrix(D, n, n);  
-  std::vector<double> *  p = computeClustering(k, T, x);  
+  std::vector<double> *  p = computeClustering(k, T, x);
+  double cost = 0;
+  for(int i=0;i<k;i++){
+    int ind1 = int(p->at(i));
+    int ind2 = int(p->at(i+1));
+    printf("ind1 = %d, ind2 = %d\n",ind1,ind2);
+    double c1 = C[ind2][ind1-1];
+    cost = cost + c1;
+    printf("cost = %f\n",c1);
+  }
+
+  return cost;
 }
 
 
 
-int cluster1Dslow1(int k, std::vector<double> * x){
+
+double cluster1Dslow1(int k, std::vector<double> * x){
+  std::sort (x->begin(),x->end());
+  printVec(x);
   int n = x->size();
   double ** C = CC(n,n,x);
-  cluster1Dslow(k,x,C); 
+  double cost = cluster1Dslow(k,x,C);
+  printf("cost = %f\n",cost);
+  return cost;
 
 }
 

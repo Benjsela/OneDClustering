@@ -1,9 +1,9 @@
 CFLAGS = -Wall -g
-CC = g++ -std=c++11
-
+CC = g++ -std=c++11 -I ../DistLibrary
+LIB = ../DistLibrary/distslib
 
 code: definitions.o cluster1.o main.o
-	$(CC) $(CFLAGS) -o code definitions.o cluster1.o main.o
+	$(CC) $(CFLAGS) -o code definitions.o cluster1.o main.o $(LIB)
 
 
 
