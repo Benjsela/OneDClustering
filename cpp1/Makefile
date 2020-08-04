@@ -1,10 +1,10 @@
 CFLAGS = -Wall -g
 CC = g++ -std=c++11 -I ../DistLibrary
 LIB = ../DistLibrary/distslib
+LIB2 = ../CppSimIO/fileIOlib
 
 code: definitions.o cluster1.o main.o utils.o
-	$(CC) $(CFLAGS) -o code definitions.o cluster1.o main.o utils.o $(LIB)
-
+	$(CC) $(CFLAGS) -o code definitions.o cluster1.o main.o utils.o $(LIB) $(LIB2)
 
 
 
