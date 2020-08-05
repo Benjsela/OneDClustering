@@ -1,6 +1,7 @@
 #include "cluster1.hpp"
 #include<vector>
 #include<algorithm>
+#include "definitions.hpp"
 
 //some utilities for debugging--------------
 int printVec(std::vector<double> * v){
@@ -115,11 +116,11 @@ double ** CC(int k, int n,std::vector<double> * x){
 }
 
 
-std::vector<double> *  computeClustering(int k, double ** T, std::vector<double> * x){
+std::vector<int> *  computeClustering(int k, double ** T, std::vector<double> * x){
   int n = x->size();
   int num = n-1;
   std::vector<double> * p = new std::vector<double>();
-  std::vector<double> * index = new std::vector<double>();
+  std::vector<int> * index = new std::vector<int>();
   p->push_back(x->at(num));
   index->push_back(num+1);
   for(int i=0;i<k;i++){   
@@ -135,7 +136,7 @@ std::vector<double> *  computeClustering(int k, double ** T, std::vector<double>
 }
 
 
-double cluster1Dslow(int k, std::vector<double> * x,double ** C){
+oneDCluster *  cluster1Dslow(int k, std::vector<double> * x,double ** C){
   int n = x->size();
   //std::vector<double> * x = new std::vector<double>();
   double ** T = new double*[n];
@@ -177,7 +178,7 @@ double cluster1Dslow(int k, std::vector<double> * x,double ** C){
   printMatrix(T, n, n);
   printf("D=\n");
   printMatrix(D, n, n);  
-  std::vector<double> *  p = computeClustering(k, T, x);
+  std::vector<int> *  p = computeClustering(k, T, x);
   double cost = 0;
   for(int i=0;i<k;i++){
     int ind1 = int(p->at(i));
@@ -187,21 +188,22 @@ double cluster1Dslow(int k, std::vector<double> * x,double ** C){
     cost = cost + c1;
     printf("cost = %f\n",c1);
   }
-
-  return cost;
+  oneDCluster * clusterAns = new oneDCluster(x,p,C,cost);
+  
+  return clusterAns;;
 }
 
 
 
 
-double cluster1Dslow1(int k, std::vector<double> * x){
+oneDCluster * cluster1Dslow1(int k, std::vector<double> * x){
   std::sort (x->begin(),x->end());
   printVec(x);
   int n = x->size();
   double ** C = CC(n,n,x);
-  double cost = cluster1Dslow(k,x,C);
-  printf("cost = %f\n",cost);
-  return cost;
+  oneDCluster *  ans = cluster1Dslow(k,x,C);
+
+  return ans;
 
 }
 

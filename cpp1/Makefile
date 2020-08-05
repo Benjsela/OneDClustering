@@ -2,9 +2,10 @@ CFLAGS = -Wall -g
 CC = g++ -std=c++11 -I ../DistLibrary
 LIB = ../DistLibrary/distslib
 LIB2 = ../CppSimIO/fileIOlib
+BOOST = -lboost_filesystem -lboost_system
 
 code: definitions.o cluster1.o main.o utils.o
-	$(CC) $(CFLAGS) -o code definitions.o cluster1.o main.o utils.o $(LIB) $(LIB2)
+	$(CC) $(CFLAGS) -o code definitions.o cluster1.o main.o utils.o $(LIB) $(LIB2) $(BOOST)
 
 
 

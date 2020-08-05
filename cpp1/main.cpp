@@ -4,7 +4,7 @@
 #include<vector>
 #include "../DistLibrary/customDistributions.hpp"
 #include "utils.hpp"
-
+#include "../CppSimIO/fileIO.hpp"
 
 
 
@@ -37,15 +37,15 @@ std::vector<double> *  test1(){
     data->push_back(a);
   }
   return data;
-  cluster1Dslow1(3,data);
+  // cluster1Dslow1(3,data);
 }
 
-
+/*
 int testClusters(std::vector<double> * data, std::vector<int> * num){
   std::vector<double> * cost = new std::vector<double>();
   int s = num->size();
   for(int i=0;i<s;i++){
-    double c = cluster1Dslow1(num->at(i),data);
+    oneDCluster * c = cluster1Dslow1(num->at(i),data);
     cost->push_back(c);
     //    printf("COST = %f\n",c);
   }
@@ -56,11 +56,11 @@ int testClusters(std::vector<double> * data, std::vector<int> * num){
   
 
 }
-
+*/
 
 
 int main(){
-  test1();
+  //std:vector<double> * data = test1();
   
   std::vector<double> * x = new std::vector<double>();
   x->push_back(4);
@@ -79,7 +79,8 @@ int main(){
   num->push_back(7);
   std::vector<double> * data = test1(); 
   // num->push_back(7);
-  testClusters(data,num);
+  //testClusters(data,num);
+  tryClusters(data,num);
   
 }
 
